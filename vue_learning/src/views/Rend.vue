@@ -52,16 +52,16 @@ export default {
 </script>
 
 <template>
-  <el-table :data="tableData" style="width: 100%">
+  <el-table :data="tableData"  :table-layout="'fixed'" style="width: 100%">x
     <el-table-column label="借阅时间" width="180">
       <template #default="scope">
-        <div style="display: flex; align-items: center">
+        <div>
           <el-icon><timer /></el-icon>
-          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+          <span>{{ scope.row.date }}</span>
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="书名" width="180">
+    <el-table-column label="书名" >
       <template #default="scope">
         <el-popover  trigger="hover" placement="top" width="auto">
           <template #default>
@@ -75,7 +75,7 @@ export default {
       </template>
     </el-table-column>
 
-    <el-table-column label="剩余天数" width="180">
+    <el-table-column label="剩余天数" >
 
       <template #default="scope">
         <el-icon><clock /></el-icon>

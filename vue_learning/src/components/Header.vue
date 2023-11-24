@@ -2,15 +2,23 @@
 import { ref } from 'vue'
 import {defineComponent} from "vue";
 import router from "@/router";
+import selfInformation from "@/components/SelfInformation.vue";
 
 const activeIndex = ref('1')
 const handleSelect = (key) => {
   console.log(key)
   router.push(key)
 }
+
+const drawer = ref(false)
 defineComponent({
   name: 'Header_mila'
 })
+
+const onClick = ()=> {
+  drawer.value = !drawer.value   // 触发器   每次改变触发子组件的监听方法
+  console.log(drawer.value)
+}
 
 </script>
 
@@ -34,15 +42,13 @@ defineComponent({
     <el-sub-menu index="2">
       <template #title>功能</template>
       <el-menu-item index="/bookList">图书主页</el-menu-item>
-      <el-menu-item index="/rend">借阅服务</el-menu-item>
-      <el-menu-item index="2-3">还书服务</el-menu-item>
-      <el-sub-menu index="2-4">
-        <template #title>个人信息</template>
-        <el-menu-item index="2-4-1">个人主页</el-menu-item>
-        <el-menu-item index="2-4-2">设置</el-menu-item>
-      </el-sub-menu>
+      <el-menu-item index="/rend">还书服务</el-menu-item>
+      <el-menu-item  @click="onClick">个人信息</el-menu-item>
+      <el-menu-item index="/managementBook">管理图书</el-menu-item>
     </el-sub-menu>
+
   </el-menu>
+  <self-information v-bind:drawer="drawer"></self-information>
 </template>
 
 <style scoped>

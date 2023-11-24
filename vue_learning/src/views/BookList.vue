@@ -1,6 +1,10 @@
 <script>
+import lend from '@/components/LendDetails.vue'
 export default {
   name: "BookList_mila",
+  components: {
+    lend: lend
+  },
   data() {
     return {
       books: [
@@ -65,8 +69,8 @@ export default {
         <div style="padding: 14px;">
           <h3>{{ book.title }}</h3>
           <p>{{ book.summary }}</p>
-          <el-button type="text">图书详情</el-button>
-          <el-button type="primary">借阅</el-button>
+          <el-button type="text" @click="this.$router.push('/bookDetails')">图书详情</el-button>
+          <lend></lend>
         </div>
       </el-card>
     </el-col>
