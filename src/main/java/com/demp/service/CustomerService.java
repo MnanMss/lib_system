@@ -18,20 +18,12 @@ public class CustomerService implements UserService<Customer>{
     }
 
     public Customer loadUser(String username) {
+
         return customerRepo.findByUsername(username);
     }
 
-    @Override
-    public void deleteById(long l) {
-        customerRepo.deleteById(l);
-    }
-
-    @Override
-    public Optional<Customer> findById(Long id) {
-        return customerRepo.findById(id);
-    }
-
     public Customer saveUser(Customer user) {
+        user.setAuthority("Customer");
         return customerRepo.save(user);
     }
 }

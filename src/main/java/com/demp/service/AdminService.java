@@ -4,7 +4,6 @@ import com.demp.model.Admin;
 import com.demp.repository.AdminRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 public class AdminService implements UserService<Admin>{
@@ -18,18 +17,10 @@ public class AdminService implements UserService<Admin>{
         return adminRepo.findByUsername(username);
     }
 
-    @Override
-    public Optional<Admin> findById(Long id) {
-        return adminRepo.findById(id);
-    }
 
     @Override
     public Admin saveUser(Admin user) {
         return adminRepo.save(user);
     }
 
-    @Override
-    public void deleteById(long l) {
-        adminRepo.deleteById(l);
-    }
 }

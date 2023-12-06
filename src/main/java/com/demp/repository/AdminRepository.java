@@ -3,7 +3,9 @@ package com.demp.repository;
 import com.demp.model.Admin;
 import org.springframework.data.repository.CrudRepository;
 
-public interface AdminRepository extends CrudRepository<Admin, Long> {
+import java.util.UUID;
+
+public interface AdminRepository extends CrudRepository<Admin, UUID> {
 
     Admin findByUsername(String username);
 }

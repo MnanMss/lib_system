@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -14,17 +15,28 @@ import java.util.Date;
 public class LendRecord {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
+    @PrePersist
+    public void initializeUUID() {
+        if (id == null) {
+            id = UUID.randomUUID();
+            renewTime = 3;
+        }
+    }
 
-    private final Date borrowTime;
-    private final Date returnTime;
-    private final int lenDays;
+    private final String borrowTime;
+    private final String returnTime;
+    private  int lenDays;
+
+    private int renewTime;
+
+    @Transient
+    private int resDays;
 
 
-    @OneToOne
+    @ManyToOne
     private  Customer customer;
     
-    @OneToOne
+    @ManyToOne
     private Book book;
 }

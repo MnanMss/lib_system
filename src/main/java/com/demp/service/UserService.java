@@ -8,7 +8,4 @@ public interface UserService<T>{
 
     public T saveUser(T user);
 
-    public Optional<T> findById(Long id);
-
-    void deleteById(long l);
 }
