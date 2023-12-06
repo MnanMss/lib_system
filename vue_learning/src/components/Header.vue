@@ -1,8 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import {defineComponent} from "vue";
 import router from "@/router";
 import selfInformation from "@/components/SelfInformation.vue";
+import store from "@/store";
 
 const activeIndex = ref('1')
 const handleSelect = (key) => {
@@ -13,6 +14,13 @@ const handleSelect = (key) => {
 const drawer = ref(false)
 defineComponent({
   name: 'Header_mila'
+})
+
+let authorityFlag = ref(true)
+
+onMounted(() => {
+  if(store.state.authority === "Customer") authorityFlag = true
+  else if(store.state.authority === "Admin") authorityFlag = false
 })
 
 const onClick = ()=> {
@@ -41,10 +49,11 @@ const onClick = ()=> {
     <el-menu-item index="/search" >主页</el-menu-item>
     <el-sub-menu index="2">
       <template #title>功能</template>
-      <el-menu-item index="/bookList">图书主页</el-menu-item>
-      <el-menu-item index="/rend">还书服务</el-menu-item>
-      <el-menu-item  @click="onClick">个人信息</el-menu-item>
-      <el-menu-item index="/managementBook">管理图书</el-menu-item>
+      <el-menu-item index="/bookList" v-if="authorityFlag">图书主页</el-menu-item>
+      <el-menu-item index="/rend" v-if="authorityFlag">还书服务</el-menu-item>
+      <el-menu-item  @click="onClick" >个人信息</el-menu-item>
+      <el-menu-item index="/managementBook" v-if="!authorityFlag">管理图书</el-menu-item>
+      <el-menu-item index="/addBook" v-if="!authorityFlag">添加图书</el-menu-item>
     </el-sub-menu>
 
   </el-menu>

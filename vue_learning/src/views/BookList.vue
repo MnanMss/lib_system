@@ -1,5 +1,7 @@
 <script>
 import lend from '@/components/LendDetails.vue'
+import request from '@/until/request'
+import router from "@/router";
 export default {
   name: "BookList_mila",
   components: {
@@ -8,48 +10,32 @@ export default {
   data() {
     return {
       books: [
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
-        {
-          image: "https://pic.52112.com/180904/EPS-180904_48/qvz5MLSAHj_small.jpg",
-          title: "js实战",
-          summary: "ooooooo",
-        },
+
       ],
       totalBooks: 10
+    }
+  },
+  mounted() {
+      request.post("api/book/findALl").then(res => {
+        if(res.data.code === "-1") {
+          this.$message({
+            message: res.data.msg,
+            type: "error"
+          })
+        }
+        else {
+          this.books = res.data.data
+          console.log(res.data.data)
+        }
+      })
+  },
+  methods: {
+    detail(book) {
+      sessionStorage.setItem("nowBook" , JSON.stringify(book))
+      router.push("/bookDetails")
+    },
+    lend(book) {
+      sessionStorage.setItem("nowBook" , JSON.stringify(book))
     }
   }
 
@@ -57,20 +43,20 @@ export default {
 </script>
 
 <template>
-  <div class="search-bar">
-    <el-input placeholder="搜索图书" v-model="searchQuery" />
-  </div>
-  <el-row :gutter="20">
+<!--  <div class="search-bar">-->
+<!--    <el-input placeholder="搜索图书" v-model="searchQuery" />-->
+<!--  </div>-->
+  <el-row :gutter="20" style="margin-left: 2%">
     <el-col :xs="12" :sm="6"  v-for="book in books" :key="book.id">
-      <el-card class="book-card">
+      <el-card class="book-card" style="overflow: hidden">
         <div class="image-container">
-          <img :src="book.image" alt="Book Cover" />
+          <img :src="book.imgSrc" alt="Book Cover" style="max-width: 100%; height: 150px; object-fit: cover"/>
         </div>
-        <div style="padding: 14px;">
-          <h3>{{ book.title }}</h3>
-          <p>{{ book.summary }}</p>
-          <el-button type="text" @click="this.$router.push('/bookDetails')">图书详情</el-button>
-          <lend></lend>
+        <div >
+          <h3 style="height: 30px">{{ book.bookName }}</h3>
+          <p style="height: 30px">{{ book.description }}</p>
+          <el-button type="text" @click="detail(book)">图书详情</el-button>
+          <lend @myClick="lend(book)"></lend>
         </div>
       </el-card>
     </el-col>

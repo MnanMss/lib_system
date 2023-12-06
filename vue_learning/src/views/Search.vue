@@ -1,18 +1,39 @@
-<script setup>
-import { ElInput, ElIcon } from 'element-plus';
-import { Search } from '@element-plus/icons-vue';
-import {defineComponent , ref} from "vue";
+<script>
+import {Search} from "@element-plus/icons-vue";
+import request from "@/until/request";
+import router from "@/router";
 
-const input = ref('')
+export default {
+  name: 'Search_mila',
+  components: {Search},
+  data() {
+    return {
+      input: ''
+    }
+  },
+  methods: {
+    search() {
+      request.post("api/book/findBookByName/" + this.input).then(res => {
+        if(res.data.code === "-1") {
+          this.$message({
+          message: res.data.msg,
+          type: "error"
+          })
+        }
+      else {
+        sessionStorage.setItem("nowBook" , JSON.stringify(res.data.data))
+        router.push("/bookDetails")
+    }
+  })
+    }
+  }
+}
 
-defineComponent({
-  name: 'Search_mila'
-})
 </script>
 
 <template>
   <div class="search-container">
-    <el-input v-model="input" placeholder="请输入搜索内容" prefix-icon="el-icon-search">
+    <el-input v-model="input" placeholder="请输入搜索内容" prefix-icon="el-icon-search" @change="search" >
       <template #prefix>
         <el-icon>
           <search />

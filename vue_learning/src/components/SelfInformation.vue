@@ -1,11 +1,32 @@
 <script>
+
+import ModeInformation from "@/components/ModeInformation.vue";
+import router from "@/router";
+import store from "@/store";
 export default {
   name: "SelfInformation_mila",
   props:['drawer'],
+  components: {
+    Mode: ModeInformation
+  },
   data() {
     return {
-      flag: false
+      flag: false,
+      user: {},
+      authorityFlag: true
     }
+  },
+  methods: {
+    logOut() {
+      sessionStorage.removeItem("user")
+      this.flag=true
+      router.push("/login")
+    }
+  },
+  mounted() {
+    this.user = JSON.parse(sessionStorage.getItem("user"))
+    if(store.state.authority === "Customer") this.authorityFlag = true
+    else if(store.state.authority === "Admin") this.authorityFlag = false
   },
   watch:{
     drawer(oldValue , newValue) {
@@ -24,23 +45,19 @@ export default {
         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
     />
     <el-descriptions
-        title="Vertical list with border"
+        title="用户信息"
         direction="vertical"
         :column="4"
         :size="'medium'"
     >
-      <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
-      <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
-      <el-descriptions-item label="Place" :span="2">Suzhou</el-descriptions-item>
-      <el-descriptions-item label="Remarks">
-        <el-tag size="small">School</el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item label="Address"
-      >No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
-      </el-descriptions-item>
+      <el-descriptions-item label="用户名">{{user.username}}</el-descriptions-item>
+      <el-descriptions-item label="电话">{{user.phone}}</el-descriptions-item>
+      <el-descriptions-item label="邮箱" :span="2">{{ user.mail }}</el-descriptions-item>
+      <el-descriptions-item label="可借书数量" v-if="authorityFlag">{{user.lendBookNum}}</el-descriptions-item>
+      <el-descriptions-item label="未还书数量" v-if="authorityFlag">{{user.unReturnedNum}}</el-descriptions-item>
     </el-descriptions>
-    <el-button type="info">修改个人信息</el-button>
-    <el-button type="danger">登出</el-button>
+    <Mode></Mode>
+    <el-button type="danger" style="margin-left: 30px" @click="logOut">登出</el-button>
   </el-drawer>
 </template>
 

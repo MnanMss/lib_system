@@ -1,8 +1,19 @@
 <script>
 import router from "@/router";
+import request from "@/until/request"
+import {Unlock, User} from "@element-plus/icons-vue";
+import store from "@/store";
 
 export default {
   name: 'Login_mila',
+  computed: {
+    Unlock() {
+      return Unlock
+    },
+    User() {
+      return User
+    }
+  },
   data() {
     return {
       loginForm: {
@@ -14,12 +25,32 @@ export default {
   },
   methods: {
     handle() {
-      console.log('登录信息：', this.loginForm.value);
-      this.$message({
-        message:"登录成功",
-        type: "success"
+      if(this.loginForm.username==='' || this.loginForm.password==='') {
+        this.$message({
+          message:"用户名或密码错误",
+          type: "warning"
+        })
+        return
+      }
+
+      request.post("api/Customer/login" , this.loginForm).then(res =>{
+        if(res.data.code === '0'){
+          this.$message({
+            message:"登录成功",
+            type: "success"
+          })
+          if(res.data.data.authority === "Admin") {
+            store.commit('setAuthority' , 'Admin')
+          }
+          sessionStorage.setItem("user" , JSON.stringify(res.data.data)) // 缓存用户信息
+          router.push('/search')
+        } else {
+          this.$message({
+            message: res.data.msg,
+            type: "error"
+          })
+        }
       })
-      router.push('/search')
     },
     register() {
       router.push('/register')
@@ -37,7 +68,7 @@ export default {
           <el-input
               v-model="loginForm.username"
               placeholder="用户名"
-              prefix-icon="el-icon-user"
+              :prefix-icon="User"
               autocomplete="off">
           </el-input>
         </el-form-item>
@@ -46,7 +77,7 @@ export default {
               type="password"
               v-model="loginForm.password"
               placeholder="密码"
-              prefix-icon="el-icon-lock"
+              :prefix-icon='Unlock'
               autocomplete="off"
               show-password>
           </el-input>

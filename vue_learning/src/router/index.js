@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from "@/store";
 
 const routes = [
     {
@@ -7,16 +8,6 @@ const routes = [
         redirect: 'login',
         component: () => import('@/components/Layout.vue'),
         children: [
-            {
-                path: '/home',
-                name: 'home',
-                component: ()=> import('@/views/Home.vue')
-            },
-            {
-                name: 'element',
-                path: '/element',
-                component: ()=> import('@/components/element.vue')
-            },
             {
                 name: 'search',
                 path: '/search',
@@ -41,6 +32,11 @@ const routes = [
                 name: 'managementBook',
                 path: '/managementBook',
                 component:()=>import('@/views/ManagementBook.vue')
+            },
+            {
+                name: 'addBook',
+                path: '/addBook',
+                component: ()=>import('@/views/AddBook.vue')
             }
         ],
     },
@@ -54,34 +50,33 @@ const routes = [
         name: 'register',
         component: ()=>import('@/views/Register.vue')
     }
-    // path: '/',
-    //
-    // children:[
-    // {
-    //     path: '/login',
-    //     name: 'Login',
-    //     component: ()=>import('@/views/Login.vue')
-    // },
-    // {
-    //     path: '/element',
-    //     name: 'element',
-    //     component: ()=> import('@/components/element.vue')
-    // },
-    // {
-    //     path: '/register',
-    //     name: 'register',
-    //     component: ()=> import('@/views/Register.vue')
-    // },
-    // {
-    //     path: '/home',
-    //     name: 'home',
-    //     component: () => import('@/views/Home.vue')
-    // }
 ]
+
+
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
+})
+
+router.beforeEach((to , from , next) => {
+    if(to.fullPath === '/register' || to.fullPath === '/login') {
+        next()
+    }
+    else if(sessionStorage.getItem("user") == null) {
+        router.push('/login')
+    }
+    else if((to.fullPath === '/addBook' || to.fullPath === '/managementBook') && store.state.authority !== "Admin") {
+        next(false)
+    }
+    else {
+        if(store.state.isModalVisible === true) {
+            next(false)
+        }else {
+            next()
+        }
+    }
+
 })
 
 export default router

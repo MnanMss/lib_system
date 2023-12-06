@@ -1,25 +1,71 @@
 <script>
 import router from "@/router";
+import request from "@/until/request"
+import {Iphone, User, Unlock , Message} from "@element-plus/icons-vue";
+// import {Message} from "element-ui";
+
 
 export default {
   name: "Register_mila",
+  computed: {
+    Iphone() {
+      return Iphone
+    },
+    Unlock() {
+      return Unlock
+    },
+    User() {
+      return User
+    },
+    Message() {
+      return Message
+    }
+  },
   data() {
     return {
       loginForm: {
         username: '',
         password: '',
-      }
+        phone: '',
+        mail: ''
+      },
+      confirmPassword: ''
     }
   },
   methods: {
     handle() {
-      console.log('注册信息：', this.loginForm.value);
 
-      router.push('/search')
-      this.$message({
-        message: "注册成功",
-        type: "success"
+      if(
+          this.loginForm.username === '' ||
+          this.loginForm.password === '' ||
+          this.loginForm.phone === '' ||
+          this.loginForm.mail === ''
+      ) {
+        this.$message({
+          message: '请填写完整信息',
+          type: 'warning'
+        })
+        return
+      }
+
+      if(this.loginForm.password !== this.confirmPassword) {
+        this.$message({
+          message: '两次密码不相同',
+          type: 'warning'
+        })
+        return
+      }
+
+      request.post("api/Customer/register" , this.loginForm).then(res=>{
+        this.$message({
+          message: res.data.msg,
+          type: res.data.code === '0' ? 'success' : 'error'
+        })
+        if(res.data.code === '0') {
+          sessionStorage.setItem("user" , JSON.stringify(res.data.data))
+        }
       })
+      router.push('/search')
     }
   }
 }
@@ -35,7 +81,7 @@ export default {
           <el-input
               v-model="loginForm.username"
               placeholder="用户名"
-              prefix-icon="el-icon-user"
+              :prefix-icon="User"
               autocomplete="off">
           </el-input>
         </el-form-item>
@@ -44,10 +90,37 @@ export default {
               type="password"
               v-model="loginForm.password"
               placeholder="密码"
-              prefix-icon="el-icon-lock"
+              :prefix-icon='Unlock'
               autocomplete="off"
               show-password>
           </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+              type="password"
+              v-model="confirmPassword"
+              placeholder="确认密码"
+              :prefix-icon='Unlock'
+              autocomplete="off"
+              show-password>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+              v-model="loginForm.phone"
+              placeholder="电话"
+              :prefix-icon="Iphone"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+              v-model="loginForm.mail"
+              placeholder="邮箱"
+              :prefix-icon="Message"
+          >
+          </el-input>
+
         </el-form-item>
         <el-form-item>
           <el-button type="primary" block @click="handle">注册</el-button>

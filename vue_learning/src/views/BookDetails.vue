@@ -4,6 +4,14 @@ export default {
   name: "BookDetails_mila",
   components: {
     lend: lend
+  },
+  mounted() {
+    this.book = JSON.parse(sessionStorage.getItem("nowBook"))
+  },
+  data() {
+    return {
+      book: {}
+    }
   }
 }
 </script>
@@ -12,25 +20,48 @@ export default {
   <div class="layout-container">
     <!-- 上半部分，两个并列的卡片 -->
     <el-row :gutter="20" class="top-row">
-      <el-col :span="11">
+      <el-col :span="6">
         <el-card shadow="hover">
-          <div class="content">图书详情</div>
+          <el-image :src="book.imgSrc"></el-image>
         </el-card>
       </el-col>
-      <el-col :span="11" class="second-card">
+      <el-col :span="16" class="second-card">
         <el-card shadow="hover">
-          <div class="content">借阅，图书相关信息</div>
+          <el-row>
+            <el-col>书名：{{book.bookName}}</el-col>
+          </el-row>
+          <el-row>
+            <el-col>作者：{{book.author}}</el-col>
+          </el-row>
+          <el-row>
+            <el-col>出版社：{{book.bookCompany}}</el-col>
+          </el-row>
+          <el-row>
+            <el-col>价格：{{book.price}}</el-col>
+          </el-row>
+          <el-row>
+            <el-col>出版日：{{book.publishDate}}</el-col>
+          </el-row>
+          <el-row>
+            <el-col>书籍描述：{{book.description}}</el-col>
+          </el-row>
+          <el-row>
+            <el-col>剩余数量：{{book.freeNumber}}</el-col>
+          </el-row>
+          <el-row>
+            <el-col>馆藏数量：{{book.totalNumber}}</el-col>
+          </el-row>
         </el-card>
       </el-col>
     </el-row>
-
-    <!-- 下半部分，一个宽度更大的卡片 -->
-    <el-card shadow="hover" class="large-card">
-      <div class="content">评论，图书目录</div>
-    </el-card>
+    <lend></lend>
+<!--    &lt;!&ndash; 下半部分，一个宽度更大的卡片 &ndash;&gt;-->
+<!--    <el-card shadow="hover" class="large-card">-->
+<!--      <div class="content">评论，图书目录</div>-->
+<!--    </el-card>-->
 
     <!-- 右下角的按钮 -->
-    <lend  class="action-button"></lend>
+
   </div>
 </template>
 
