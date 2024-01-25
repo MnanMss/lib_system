@@ -1,6 +1,5 @@
-package com.demp;
+package java.com.demp;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
